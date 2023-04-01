@@ -1,9 +1,21 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import jsons from './emoji.json'
-	let generator_disable = false
+	enum fill_style {
+		color_fill = "color_fill",
+		england_flag = "england_flag"
+	}
+	let egg_fill_style:fill_style = fill_style.color_fill
 	const LENGTH_OF_EMOJI_JSON = jsons["all_emoji"].length
 	const genRandom = (min:number, max:number):number => {
 		return Math.floor(Math.random() * (max - min + 1)+min)
+	}
+	interface rectProp {ctx: CanvasRenderingContext2D, x, y, w, h, color}
+	const create_rectangle = (rect: rectProp) => {
+		rect.ctx.beginPath()
+		rect.ctx.rect(rect.x,rect.y,rect.w,rect.h)
+		rect.ctx.fillStyle = rect.color
+		rect.ctx.fill()
 	}
 	let canvas: HTMLCanvasElement
 	let x:number = 0
@@ -25,10 +37,16 @@
 	}
 	const egg_fill = () => {
 		const ctx:CanvasRenderingContext2D = canvas.getContext('2d')
-		ctx.beginPath()
-		ctx.rect(0,0,500,520)
-		ctx.fillStyle = COLOR_EGG_COLOR
-		ctx.fill()
+		if (egg_fill_style == fill_style.color_fill) {
+			ctx.beginPath()
+			ctx.rect(0,0,500,520)
+			ctx.fillStyle = COLOR_EGG_COLOR
+			ctx.fill()
+		} else if (egg_fill_style == fill_style.england_flag){
+			create_rectangle({ctx: ctx, x: 0, y: 0, w: 500, h: 520, color: "white" })
+			create_rectangle({ctx: ctx, x: 0, y: 200, w: 500, h: 50, color: "#cf081f" })
+			create_rectangle({ctx: ctx, x: 230, y: 0, w: 50, h: 500, color: "#cf081f" })
+		}
 	}
 	const generator = async () => {
 		x = 0
@@ -67,6 +85,9 @@
 		}
 		drawing_egg_ring()
 	}
+	onMount(()=> {
+		generator()
+	})
 </script>
 
 <main>
@@ -88,6 +109,12 @@
 			<br>
 			<span>Background Color: </span>
 			<input type="color" name="" id="" bind:value={COLOR_BACKGROUND}>
+			<br>
+			<span>Fill Style: </span>
+			<select name="" id="" bind:value={egg_fill_style}>
+				<option value={fill_style.color_fill} selected>Color fill</option>
+				<option value={fill_style.england_flag}>England Flag</option>
+			</select>
 			<br>
 			<button on:click={generator} >generate</button>
 		</div>
