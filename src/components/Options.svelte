@@ -1,13 +1,37 @@
-<script>
+<script lang="ts">
+	import { menuCollapse, selection } from "../libs/stores";
+    //@ts-ignore
+	import type { fill_style } from "../libs/styles.d.ts";
+    let checked:boolean = false
+    let selections:string
+    $: {
+        if(selections == value){
+            checked = true
+        }else{
+            checked = false
+        }
+    }
     export let src
+    export let value: fill_style
+    selection.subscribe(value => {
+        selections = value
+    })
+    function menuclicked(){
+        selection.set(value)
+        menuCollapse.set(false)
+    }
 </script>
 
-<button class="menuitem">
+<button class="menuitem" on:click={menuclicked}>
     <img class="menuimage" src={src} alt="">
     <span class="menutext">
         <slot></slot>
     </span>
+    {#if checked == true}
     <span class="material-symbols-outlined menutick">check_box</span>
+    {:else}
+    <span class="material-symbols-outlined menutick"> check_box_outline_blank </span>
+    {/if}
 </button>
 <style>
     .menuitem {

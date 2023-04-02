@@ -3,17 +3,18 @@
 	import Options from './components/Options.svelte';
 	import Select from './components/Select.svelte';
 	import jsons from './emoji.json'
-	enum fill_style {
-		color_fill = "color_fill",
-		england_flag = "england_flag",
-		scottish_flag = "scottish_flag"
-	}
+	import { selection } from './libs/stores';
+	//@ts-ignore
+	import { fill_style } from './libs/styles.d.ts';
 	let egg_fill_style:fill_style = fill_style.color_fill
+	selection.subscribe(value => {
+		egg_fill_style = value
+	})
 	const LENGTH_OF_EMOJI_JSON = jsons["all_emoji"].length
 	const genRandom = (min:number, max:number):number => {
 		return Math.floor(Math.random() * (max - min + 1)+min)
 	}
-	interface rectProp {ctx: CanvasRenderingContext2D, x, y, w, h, color}
+	interface rectProp {ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, color: string}
 	const create_rectangle = (rect: rectProp) => {
 		rect.ctx.beginPath()
 		rect.ctx.rect(rect.x,rect.y,rect.w,rect.h)
@@ -117,21 +118,21 @@
 			</canvas>
 		</div>
 		<div class="editorcontainer">
-			<!-- <Select>
+			<Select>
 				<div slot="option">
-					<Options src="/pattern/Color_fill.png">Color Fill</Options>
-					<Options src="/pattern/England_flag.png">England Flag</Options>
-					<Options src="/pattern/Scottish_flag.png">Scottish Flag</Options>
+					<Options src="/pattern/Color_fill.png" value={fill_style.color_fill}>Color Fill</Options>
+					<Options src="/pattern/England_flag.png" value={fill_style.england_flag}>England Flag</Options>
+					<Options src="/pattern/Scottish_flag.png" value={fill_style.scottish_flag}>Scottish Flag</Options>
 				</div>
-			</Select> -->
+			</Select> 
 			<br>
-			<span>Fill Style: </span>
+			<!-- <span>Fill Style: </span>
 			<select name="" id="" bind:value={egg_fill_style}>
 				<option value={fill_style.color_fill} selected>Color fill</option>
 				<option value={fill_style.england_flag}>England Flag</option>
 				<option value={fill_style.scottish_flag}>Scottish Flag</option>
 			</select>
-			<br>
+			<br> -->
 			{#if egg_fill_style==fill_style.color_fill}
 			<span>Egg Color: </span>
 			<input type="color" name="" id="" bind:value={COLOR_EGG_COLOR}>

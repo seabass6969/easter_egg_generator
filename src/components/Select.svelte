@@ -1,10 +1,16 @@
 <script>
+	import { menuCollapse } from "../libs/stores";
+
+
     let opened = false
+    menuCollapse.subscribe(value => {
+        opened = value
+    })
     function opening(){
         if(opened == false){
-            opened = true
+            menuCollapse.set(true)
         }else if(opened == true){
-            opened = false
+            menuCollapse.set(false)
         }
     }
 </script>
