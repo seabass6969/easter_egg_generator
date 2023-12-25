@@ -1,4 +1,5 @@
 <script>
+	import { fly } from "svelte/transition";
 	import { menuCollapse } from "../libs/stores";
 
 
@@ -25,7 +26,7 @@
     </div>
 </button>
 {#if opened == true}
-<div class="menu">
+<div class="menu" in:fly={{y: 40}} out:fly={{y: -40}}>
     <div></div>
     <slot name="option">
     </slot>
